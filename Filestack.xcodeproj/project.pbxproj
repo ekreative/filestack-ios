@@ -264,6 +264,8 @@
 		45BFF67C23290B1F00944028 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		45BFF67D23290B1F00944028 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VERSION; sourceTree = "<group>"; };
 		45CF056625D5744E0090966A /* PickerBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerBehavior.swift; sourceTree = "<group>"; };
+		96E4CEA32860E1BD00E0DC00 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		96E4CEA42860E1BD00E0DC00 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -757,6 +759,8 @@
 		457084F51F975C6B00991340 = {
 			isa = PBXGroup;
 			children = (
+				96E4CEA42860E1BD00E0DC00 /* Package.resolved */,
+				96E4CEA32860E1BD00E0DC00 /* Package.swift */,
 				45BFF67B23290B1E00944028 /* LICENSE */,
 				45BFF67D23290B1F00944028 /* VERSION */,
 				45BFF67C23290B1F00944028 /* CHANGELOG.md */,
@@ -1227,8 +1231,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/filestack/filestack-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.8.0;
+				kind = exactVersion;
+				version = 2.8.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

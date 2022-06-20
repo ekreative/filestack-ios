@@ -66,8 +66,10 @@ final class MonitorViewController: UIViewController {
 
     required init(progressable: Cancellable & Monitorizable) {
         self.progressable = progressable
-
-        super.init(nibName: nil, bundle: nil)
+        let frameworkBundle = Bundle(for: Self.self)
+        let bundleURL = frameworkBundle.resourceURL?.appendingPathComponent("Filestack.bundle")
+        let resourceBundle = Bundle(url: bundleURL!)
+        super.init(nibName: nil, bundle: resourceBundle)
     }
 
     required init?(coder: NSCoder) {
