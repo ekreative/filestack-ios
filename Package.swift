@@ -23,7 +23,7 @@ let package = Package(
             dependencies: ["FilestackSDK", "ZIPFoundation"],
             exclude: ["Filestack.h", "Info.plist"],
             resources: [
-                .copy("VERSION")
+                .copy("VERSION"),
                 .copy("Sources/Resources")
             ]
         )
