@@ -24,6 +24,7 @@ let package = Package(
             exclude: ["Filestack.h", "Info.plist"],
             resources: [
                 .copy("VERSION")
+                .copy("Sources/Resources")
             ]
         )
     ]
