@@ -69,7 +69,12 @@ final class MonitorViewController: UIViewController {
         let frameworkBundle = Bundle(for: Self.self)
         let bundleURL = frameworkBundle.resourceURL?.appendingPathComponent("Filestack.bundle")
         let resourceBundle = Bundle(url: bundleURL!)
+        #if SWIFT_PACKAGE
+        super.init(nibName: nil, bundle: Bundle.module)
+        #else
         super.init(nibName: nil, bundle: resourceBundle)
+        #endif
+        
     }
 
     required init?(coder: NSCoder) {

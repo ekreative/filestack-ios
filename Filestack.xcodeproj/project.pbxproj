@@ -259,7 +259,7 @@
 		4599415226BBF6780039BF8F /* CustomPickerUploadController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPickerUploadController.swift; sourceTree = "<group>"; };
 		45A2497426BC3A4B0078785D /* SourceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceProvider.swift; sourceTree = "<group>"; };
 		45A2497626BC3A5E0078785D /* SourceProviderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceProviderDelegate.swift; sourceTree = "<group>"; };
-		45BFF67A23290B1E00944028 /* Filestack.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Filestack.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		45BFF67A23290B1E00944028 /* Filestack.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Filestack.podspec; sourceTree = "<group>"; };
 		45BFF67B23290B1E00944028 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		45BFF67C23290B1F00944028 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		45BFF67D23290B1F00944028 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VERSION; sourceTree = "<group>"; };

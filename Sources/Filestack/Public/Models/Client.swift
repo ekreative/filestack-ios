@@ -75,7 +75,12 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
         let bundleURL = frameworkBundle.resourceURL?.appendingPathComponent("Filestack.bundle")
         let resourceBundle = Bundle(url: bundleURL!)
         
+        #if SWIFT_PACKAGE
+        let storyboard = UIStoryboard(name: "Picker", bundle: Bundle.module)
+        #else
         let storyboard = UIStoryboard(name: "Picker", bundle: resourceBundle)
+        #endif
+        
         let scene = PickerNavigationScene(client: self, storeOptions: storeOptions)
 
         return storyboard.instantiateViewController(for: scene)
