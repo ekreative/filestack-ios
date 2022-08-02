@@ -41,6 +41,8 @@ final class MonitorViewController: UIViewController {
         let button = UIButton()
 
         button.setTitle("Cancel", for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.tintColor = .systemRed
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
 
         return button
