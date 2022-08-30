@@ -51,7 +51,7 @@ import FilestackSDK
                                                        provider: .photoLibrary)
 
     /// Documents
-    @objc public static var documents = LocalSource(description: "iOS Files",
+    @objc public static var documents = LocalSource(description: "Choose File",
                                                     image: .templatedFilestackImage("icon-documents"),
                                                     provider: .documents)
 

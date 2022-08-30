@@ -8,6 +8,7 @@
 
 import FilestackSDK
 import UIKit
+import Photos
 
 class SourceTableViewController: UITableViewController {
     private let defaultSectionHeaderHeight: CGFloat = 32
@@ -214,7 +215,43 @@ private extension SourceTableViewController {
             return
         }
         #endif
+        
+        // check library permissions
+        let photosAuth = PHPhotoLibrary.authorizationStatus()
+        if source.provider == .photoLibrary && photosAuth == .denied {
+            let alert = UIAlertController(title: "Permission Needed",
+                                          message: "The application does not have the permission to access your photos or files. Please change it in Settings",
+                                          preferredStyle: .alert)
 
+            alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+            self.present(alert, animated: true)
+            return
+        }
+        
+        // check camera permissions
+        let cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
+        if source.provider == .camera && cameraPermission == .denied {
+            let alert = UIAlertController(title: "Permission Needed",
+                                          message: "The application does not have the permission to access your camera. Please change it in Settings",
+                                          preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+            self.present(alert, animated: true)
+            return
+        }
+        
         guard let picker = navigationController as? PickerNavigationController else { return }
 
         let pickCompletionHandler: (([URL]) -> Void) = { urls in
