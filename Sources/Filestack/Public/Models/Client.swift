@@ -16,34 +16,34 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
 /// The `Client` class provides an unified API to upload files and manage cloud contents using Filestack REST APIs.
 @objc(FSFilestackClient) public class Client: NSObject {
     // MARK: - Properties
-
+    
     /// An API key obtained from the [Developer Portal](http://dev.filestack.com).
     @objc public let apiKey: String
-
+    
     /// A `Security` object. `nil` by default.
     @objc public let security: Security?
-
+    
     /// A `Config` object.
     @objc public let config: Config
-
+    
     /// The Filestack SDK client used for uploads and transformations.
     @objc public let sdkClient: FilestackSDK.Client
-
+    
     // MARK: - Private Properties
-
+    
     private let cloudService = CloudService()
-
+    
     private var lastToken: String?
     private var resumeCloudRequestNotificationObserver: NSObjectProtocol!
     private var safariAuthSession: AnyObject?
-
+    
     private lazy var authCallbackURL: URL? = {
         guard let scheme = config.callbackURLScheme else { return nil }
         return URL(string: "\(scheme)://Filestack")
     }()
-
+    
     // MARK: - Lifecyle Functions
-
+    
     /// Default initializer.
     ///
     /// - Parameter apiKey: An API key obtained from the Developer Portal.
@@ -57,12 +57,12 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
         self.lastToken = token
         self.sdkClient = FilestackSDK.Client(apiKey: apiKey, security: security)
         self.config = config ?? Config()
-
+        
         super.init()
     }
-
+    
     // MARK: - Public Functions
-
+    
     /// Returns an instance of a `PickerNavigationController` that will allow the user to interactively pick files from
     /// a local or cloud source and upload them to a given location.
     ///
@@ -75,17 +75,17 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
         let bundleURL = frameworkBundle.resourceURL?.appendingPathComponent("Filestack.bundle")
         let resourceBundle = Bundle(url: bundleURL!)
         
-        #if SWIFT_PACKAGE
+#if SWIFT_PACKAGE
         let storyboard = UIStoryboard(name: "Picker", bundle: Bundle.module)
-        #else
+#else
         let storyboard = UIStoryboard(name: "Picker", bundle: resourceBundle)
-        #endif
+#endif
         
         let scene = PickerNavigationScene(client: self, storeOptions: storeOptions)
-
+        
         return storyboard.instantiateViewController(for: scene)
     }
-
+    
     /// Uploads a single `Uploadable` to a given storage location.
     ///
     /// Currently the only storage location supported is Amazon S3.
@@ -115,7 +115,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                                 uploadProgress: uploadProgress,
                                 completionHandler: completionHandler)
     }
-
+    
     /// Uploads an array of `Uploadable` items to a given storage location.
     ///
     /// Currently the only storage location supported is Amazon S3.
@@ -147,7 +147,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                                 uploadProgress: uploadProgress,
                                 completionHandler: completionHandler)
     }
-
+    
     /// Allows interactively picking file(s) from a local source (e.g. camera, photo library or documents) and,
     /// optionally, uploads the file(s) to Filestack.
     ///
@@ -166,12 +166,12 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                           pickCompletionHandler: (([URL]) -> Void)? = nil,
                           uploadCompletionHandler: (([JSONResponse]) -> Void)? = nil) -> Cancellable & Monitorizable {
         let uploader: (DeferredAdd & Uploader)?
-
+        
         switch behavior {
         case let .uploadAndStore(options):
             options.startImmediately = false
             options.deleteTemporaryFilesAfterUpload = false
-
+            
             // Setup uploader.
             uploader = sdkClient.upload(options: options) { responses in
                 uploadCompletionHandler?(responses)
@@ -180,10 +180,10 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
             // No uploader.
             uploader = nil
         }
-
+        
         let uploadController: (Cancellable & Monitorizable & Startable)
         let sourceType: UIImagePickerController.SourceType?
-
+        
         switch source {
         case .camera:
             sourceType = .camera
@@ -192,7 +192,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
         default:
             sourceType = nil
         }
-
+        
         if let sourceProvider = source.sourceProvider {
             uploadController = CustomPickerUploadController(uploader: uploader,
                                                             viewController: presentingViewController,
@@ -211,17 +211,24 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                                                               config: config,
                                                               completionBlock: pickCompletionHandler)
         }
-
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                // Start upload...
-                DispatchQueue.main.async { uploadController.start() }
+        
+        if sourceType == .photoLibrary {
+            PHPhotoLibrary.requestAuthorization { status in
+                if status == .authorized {
+                    DispatchQueue.main.async { uploadController.start() }
+                } else {
+                    DispatchQueue.main.async {
+                        uploadController = PhotoLibraryPermission(presentedViewController: presentingViewController)
+                        uploadController.start() }
+                }
             }
+        } else {
+            DispatchQueue.main.async { uploadController.start() }
         }
-
+        
         return uploadController
     }
-
+    
     /// Lists the content of a cloud provider at a given path. Results are paginated (see `pageToken` below.)
     ///
     /// - Parameter provider: The cloud provider to use (e.g. Dropbox, GoogleDrive, S3)
@@ -243,7 +250,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
         guard let authCallbackURL = authCallbackURL else {
             fatalError("Please make sure your config's `callbackURLScheme` is present.")
         }
-
+        
         let request = FolderListRequest(authCallbackURL: authCallbackURL,
                                         apiKey: apiKey,
                                         security: security,
@@ -251,7 +258,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                                         pageToken: pageToken,
                                         provider: provider,
                                         path: path)
-
+        
         perform(request: request) { response, safariError in
             switch (response, safariError) {
             case (let response as FolderListResponse, nil):
@@ -260,10 +267,10 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                 completionHandler(FolderListResponse(error: error))
             }
         }
-
+        
         return request
     }
-
+    
     /// Stores a file from a given cloud provider and path at the desired store location.
     ///
     /// - Parameter provider: The cloud provider to use (e.g. Dropbox, GoogleDrive, S3)
@@ -288,15 +295,15 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
                                    provider: provider,
                                    path: path,
                                    storeOptions: storeOptions)
-
+        
         perform(request: request) { response, _ in
             guard let response = response as? StoreResponse else { return }
             completionHandler(response)
         }
-
+        
         return request
     }
-
+    
     /// Logs out the user from a given provider.
     ///
     /// - Parameter provider: The `CloudProvider` to logout from.
@@ -304,17 +311,17 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
     /// either contain an error (on failure) or nothing at all (on success.)
     @objc public func logout(provider: CloudProvider, completionHandler: @escaping LogoutCompletionHandler) {
         guard let token = lastToken else { return }
-
+        
         let logoutRequest = LogoutRequest(provider: provider, apiKey: apiKey, token: token)
-
+        
         logoutRequest.perform(cloudService: cloudService, completionBlock: completionHandler)
     }
-
+    
     // MARK: - Internal Functions
-
+    
     func prefetch(completionBlock: @escaping PrefetchCompletionHandler) {
         let prefetchRequest = PrefetchRequest(apiKey: apiKey)
-
+        
         prefetchRequest.perform(cloudService: cloudService, completionBlock: completionBlock)
     }
 }
@@ -329,19 +336,19 @@ private extension Client {
                 // Store last token
                 self.lastToken = token
             }
-
+            
             guard let authURL = response.authURL else {
                 // Already authenticated, call completion block and return.
                 completionBlock(response, nil)
                 return
             }
-
+            
             // Request authentication.
             let session = SFAuthenticationSession(url: authURL,
                                                   callbackURLScheme: self.config.callbackURLScheme) { url, error in
                 // Remove strong reference, so object can be deallocated.
                 self.safariAuthSession = nil
-
+                
                 if let safariError = error {
                     completionBlock(response, safariError)
                 } else if let url = url, url == self.authCallbackURL {
@@ -350,10 +357,10 @@ private extension Client {
                     completionBlock(response, ClientError.authenticationFailed)
                 }
             }
-
+            
             // Keep a strong reference to the auth session.
             self.safariAuthSession = session
-
+            
             DispatchQueue.main.async {
                 session.start()
             }
