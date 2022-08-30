@@ -9,6 +9,7 @@
 import FilestackSDK
 import UIKit
 import Photos
+import AVFoundation
 
 class SourceTableViewController: UITableViewController {
     private let defaultSectionHeaderHeight: CGFloat = 32
