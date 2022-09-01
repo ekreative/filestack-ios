@@ -181,7 +181,7 @@ private typealias CompletionHandler = (_ response: CloudResponse, _ safariError:
             uploader = nil
         }
         
-        let uploadController: (Cancellable & Monitorizable & Startable)
+        var uploadController: (Cancellable & Monitorizable & Startable)
         let sourceType: UIImagePickerController.SourceType?
         
         switch source {

@@ -12,6 +12,9 @@ import Foundation
 class PhotoLibraryPermission: NSObject, Cancellable, Monitorizable, Startable {
     let presentedViewController: UIViewController
 
+    private let trackingProgress = TrackingProgress()
+    var progress: Progress { trackingProgress }
+    
     init(presentedViewController: UIViewController) {
         self.presentedViewController = presentedViewController
     }
@@ -31,12 +34,12 @@ class PhotoLibraryPermission: NSObject, Cancellable, Monitorizable, Startable {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 
         presentedViewController.present(alert, animated: true)
-        return
-
         return true
     }
 
     /// Add `Cancellable` conformance.
     @discardableResult
-    func cancel() -> Bool {}
+    func cancel() -> Bool {
+        return true
+    }
 }
