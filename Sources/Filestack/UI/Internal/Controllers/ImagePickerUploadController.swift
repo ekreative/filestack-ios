@@ -166,19 +166,7 @@ private extension ImagePickerUploadController {
             for itemProvider in itemProviders {
                 group.enter()
 
-                let registeredTypeIdentifiers: [String]
-
-                if #available(iOS 17.0, *) {
-                    registeredTypeIdentifiers = itemProvider.registeredTypeIdentifiers.compactMap { item in
-                        if item == "com.apple.private.photos.thumbnail.standard" || item == "com.apple.private.photos.thumbnail.low" {
-                            return nil
-                        } else {
-                            return item
-                        }
-                    }
-                } else {
-                    registeredTypeIdentifiers = itemProvider.registeredTypeIdentifiers
-                }
+                let registeredTypeIdentifiers = itemProvider.registeredTypeIdentifiers
 
                 switch self.config.imageURLExportPreset {
                 case .compatible:
