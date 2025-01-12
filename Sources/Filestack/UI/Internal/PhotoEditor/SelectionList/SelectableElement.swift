@@ -125,17 +125,6 @@ class SelectableElement {
 
 extension SelectableElement {
     private func export(image: UIImage, to destinationURL: URL) -> Bool {
-        switch imageExportPreset {
-        case .compatible:
-            return image.exportJPGImage(to: destinationURL, quality: imageExportQuality)
-        case .current:
-            // Use HEIC, and fallback to JPEG if it fails, since HEIC is not available in all devices
-            // (see https://support.apple.com/en-us/HT207022)
-            if image.exportHEICImage(to: destinationURL, quality: imageExportQuality) {
-                return true
-            } else {
-                return image.exportJPGImage(to: destinationURL, quality: imageExportQuality)
-            }
-        }
+        return image.exportJPGImage(to: destinationURL, quality: imageExportQuality)
     }
 }
