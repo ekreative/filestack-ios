@@ -61,15 +61,8 @@ extension URLExtractor {
     }
 
     func fetchURL(image: UIImage) -> URL? {
-        switch imageExportPreset {
-        case .current:
-            // Use HEIC, and fallback to JPEG if it fails, since HEIC is not available in all devices
-            // (see https://support.apple.com/en-us/HT207022)
-            return exportedHEICImageURL(image: image) ?? exportedJPEGImageURL(image: image)
-        case .compatible:
-            // Use JPEG.
-            return exportedJPEGImageURL(image: image)
-        }
+        // Use always JPEG.
+        return exportedJPEGImageURL(image: image)
     }
 
     func fetchVideoURL(of asset: AVAsset, completion: @escaping (URL?) -> Void) -> AVAssetExportSession? {
