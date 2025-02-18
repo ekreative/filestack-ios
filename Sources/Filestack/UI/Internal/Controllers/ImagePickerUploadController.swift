@@ -168,19 +168,12 @@ private extension ImagePickerUploadController {
 
                 let registeredTypeIdentifiers = itemProvider.registeredTypeIdentifiers
 
-                switch self.config.imageURLExportPreset {
-                case .compatible:
-                    if registeredTypeIdentifiers.contains(AVFileType.jpg.rawValue) {
-                        typeIdentifier = AVFileType.jpg.rawValue
-                    } else {
-                        typeIdentifier = registeredTypeIdentifiers.first
-                    }
-                case .current:
-                    if registeredTypeIdentifiers.contains(AVFileType.heic.rawValue) {
-                        typeIdentifier = AVFileType.heic.rawValue
-                    } else {
-                        typeIdentifier = registeredTypeIdentifiers.first
-                    }
+                if registeredTypeIdentifiers.contains(AVFileType.heic.rawValue) {
+                    typeIdentifier = AVFileType.heic.rawValue
+                } else if registeredTypeIdentifiers.contains(AVFileType.jpg.rawValue) {
+                    typeIdentifier = AVFileType.jpg.rawValue
+                } else {
+                    typeIdentifier = registeredTypeIdentifiers.first
                 }
 
                 guard let typeIdentifier = typeIdentifier else {
